@@ -9,6 +9,8 @@
 		<setting id="myplex_user" type="text" label="myPlex user" />
 		<setting id="myplex_pass" type="text" option="hidden" label="myPlex password" />
 		<setting id="myplex_token" type="text" visible="false" option="hidden" label="myPlex Token" />
+        <setting type="sep" />
+        <setting id="filter_sections" type="text" label="Filter sections matching strings" />
 	</category>
 
 	<category label="Playback">
