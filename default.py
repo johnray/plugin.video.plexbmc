@@ -368,18 +368,28 @@ def getAllSections( ): # CHECKED
                 
         tree = etree.fromstring(html).getiterator("Directory")
         
+        #get filter string
+        filter_sections=__settings__.getSetting('filter_sections')
+        
         for sections in tree:
-                                
-            g_sections.append({'title':sections.get('title','Unknown').encode('utf-8'), 
-                               'address': sections.get('host','Unknown')+":"+sections.get('port'),
-                               'serverName' : sections.get('serverName','Unknown').encode('utf-8'),
-                               'uuid' : sections.get('machineIdentifier','Unknown') ,
-                               'path' : sections.get('path') ,
-                               'token' : sections.get('accessToken',None) ,
-                               'location' : server['discovery'] ,
-                               'art' : sections.get('art') ,
-                               'local' : sections.get('local') ,
-                               'type' : sections.get('type','Unknown') })
+            
+            section_title=sections.get('title','Unknown').encode('utf-8')
+            section_address=sections.get('host','Unknown')+":"+sections.get('port')
+            section_path=sections.get('path')
+            section_server=sections.get('serverName','Unknown').encode('utf-8')
+            
+            if not (section_title in filter_sections or section_address in filter_sections or
+                    section_path in filter_sections or section_server in filter_sections):
+                g_sections.append({'title':sections.get('title','Unknown').encode('utf-8'), 
+                                   'address': sections.get('host','Unknown')+":"+sections.get('port'),
+                                   'serverName' : sections.get('serverName','Unknown').encode('utf-8'),
+                                   'uuid' : sections.get('machineIdentifier','Unknown') ,
+                                   'path' : sections.get('path') ,
+                                   'token' : sections.get('accessToken',None) ,
+                                   'location' : server['discovery'] ,
+                                   'art' : sections.get('art') ,
+                                   'local' : sections.get('local') ,
+                                   'type' : sections.get('type','Unknown') })
     
     '''If we have more than one server source, then
        we need to ensure uniqueness amonst the
