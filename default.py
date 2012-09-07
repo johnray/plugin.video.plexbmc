@@ -767,7 +767,8 @@ def mediaType( partData, server, dvdplayback=False ): # CHECKED
                 return "file:"+file
             except: pass
         #if Windows, check other mounted drives
-        if type == "winfile":
+        check_win_drives = __settings__.getSetting('checkwindrives')
+        if type == "winfile" and check_win_drives == "true":
             for drive in "abcdefghijklmnopqrstuvwxyz":
                 if os.path.isfile(drive+":"+file[2:]):
                     return "file:"+drive+":"+file[2:]
