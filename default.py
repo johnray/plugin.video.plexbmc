@@ -756,6 +756,11 @@ def mediaType( partData, server, dvdplayback=False ): # CHECKED
                 exists.close()
                 return "file:"+file
             except: pass
+        #if Windows, check other mounted drives
+        if type == "winfile":
+            for drive in "abcdefghijklmnopqrstuvwxyz":
+                if os.path.isfile(drive+":"+file[2:]):
+                    return "file:"+drive+":"+file[2:]
                 
         printDebug("No local file")
         if dvdplayback:
