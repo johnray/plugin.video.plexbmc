@@ -126,10 +126,13 @@ g_debug = __settings__.getSetting('debug')
 
 def printDebug( msg, functionname=True ):
     if g_debug == "true":
-        if functionname is False:
-            print str(msg)
-        else:
-            print "PleXBMC -> " + inspect.stack()[1][3] + ": " + str(msg)
+        try:
+            if functionname is False:
+                print str(msg)
+            else:
+                print "PleXBMC -> " + inspect.stack()[1][3] + ": " + str(msg)
+        except:
+            print "Couldn't decode that. Sorry"
 
 #Next Check the WOL status - lets give the servers as much time as possible to come up
 g_wolon = __settings__.getSetting('wolon')
