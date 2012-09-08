@@ -469,25 +469,34 @@ def getMyPlexServers( ): # CHECKED
         
     server=etree.fromstring(html).findall('Server')
     count=0
+    
+    #get filter string
+    filter_sections=__settings__.getSetting('filter_sections')
+
     for servers in server:
         data=dict(servers.items())
         
-        if data.get('owned',None) == "1":
-            if count == 0:
-                master=1
-                count=-1
-            accessToken=getMyPlexToken()
-        else:
-            master='0'
-            accessToken=data.get('accessToken',None)
+        server_address=data['address']+":"+data['port']
+        server_name=data['name'].encode('utf-8')
         
-        tempServers.append({'serverName': data['name'].encode('utf-8') ,
-                            'address'   : data['address']+":"+data['port'] ,
-                            'discovery' : 'myplex' , 
-                            'token'     : accessToken ,
-                            'uuid'      : data['machineIdentifier'] ,
-                            'owned'     : data.get('owned',0) ,  
-                            'master'    : master })
+        # Don't add myPlex servers that match the filter strings
+        if not (server_address in filter_sections or server_name in filter_sections):
+            if data.get('owned',None) == "1":
+                if count == 0:
+                    master=1
+                    count=-1
+                accessToken=getMyPlexToken()
+            else:
+                master='0'
+                accessToken=data.get('accessToken',None)
+            
+            tempServers.append({'serverName': data['name'].encode('utf-8') ,
+                                'address'   : data['address']+":"+data['port'] ,
+                                'discovery' : 'myplex' , 
+                                'token'     : accessToken ,
+                                'uuid'      : data['machineIdentifier'] ,
+                                'owned'     : data.get('owned',0) ,  
+                                'master'    : master })
                             
     return tempServers                         
     
@@ -516,23 +525,32 @@ def getLocalServers( ): # CHECKED
              
     server=etree.fromstring(html).findall('Server')
     count=0
+    
+    #get filter string
+    filter_sections=__settings__.getSetting('filter_sections')
+    
     for servers in server:
         data=dict(servers.items())
         
-        if count == 0:
-            master=1
-        else:
-            master=0
+        server_address=data['address']+":"+data['port']
+        server_name=data['name'].encode('utf-8')
+         
+        # Don't add local servers that match the filter strings
+        if not (server_address in filter_sections or server_name in filter_sections):
+            if count == 0:
+                master=1
+            else:
+                master=0
         
-        tempServers.append({'serverName': data['name'].encode('utf-8') ,
-                            'address'   : data['address']+":"+data['port'] ,
-                            'discovery' : 'local' , 
-                            'token'     : data.get('accessToken',None) ,
-                            'uuid'      : data['machineIdentifier'] ,
-                            'owned'     : '1' ,
-                            'master'    : master })
+            tempServers.append({'serverName': data['name'].encode('utf-8') ,
+                                'address'   : data['address']+":"+data['port'] ,
+                                'discovery' : 'local' , 
+                                'token'     : data.get('accessToken',None) ,
+                                'uuid'      : data['machineIdentifier'] ,
+                                'owned'     : '1' ,
+                                'master'    : master })
 
-        count+=1                   
+            count+=1                 
     return tempServers                         
                              
 def getMyPlexURL( url_path, renew=False, suppress=True ): # CHECKED
